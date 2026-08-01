@@ -1,4 +1,6 @@
 {
   "name": "banu_content",
-  "owner": { "name": "Banu" },
+  "owner": {
+    "name": "Banu"
+  }
 }
