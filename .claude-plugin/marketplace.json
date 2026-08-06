@@ -2,5 +2,12 @@
   "name": "banu_content",
   "owner": {
     "name": "Banu"
-  }
+  },
+  "plugins": [
+    {
+      "name": "document-quality-checker",
+      "source": "./plugins/document-quality-checker",
+      "description": "MCP-powered Microsoft Word document quality checker."
+    }
+  ]
 }
