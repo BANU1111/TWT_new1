@@ -1,0 +1,6 @@
+{
+  "name": "document-quality-checker",
+  "version": "1.0.0",
+  "author": "Banu",
+  "description": "Analyzes Microsoft Word documents for heading hierarchy, structure, and document quality."
+}
