@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Quality Report - formatted.docx</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .document-name {
+            color: #666;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .summary-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .summary-section h2 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+            text-align: center;
+            border-top: 3px solid #ccc;
+        }
+
+        .stat-box.error {
+            border-top-color: #e74c3c;
+        }
+
+        .stat-box.warning {
+            border-top-color: #f39c12;
+        }
+
+        .stat-box.info {
+            border-top-color: #3498db;
+        }
+
+        .stat-count {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-box.error .stat-count {
+            color: #e74c3c;
+        }
+
+        .stat-box.warning .stat-count {
+            color: #f39c12;
+        }
+
+        .stat-box.info .stat-count {
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-text {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .status-pass {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .status-fail {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        thead {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .severity-error {
+            background-color: #fadbd8;
+            color: #a93226;
+        }
+
+        .severity-warning {
+            background-color: #fef5e7;
+            color: #7d6608;
+        }
+
+        .severity-info {
+            background-color: #d6eaf8;
+            color: #1b4965;
+        }
+
+        .check-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .message {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .location {
+            font-family: "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            color: #666;
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .recommendation {
+            font-size: 13px;
+            color: #27ae60;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #27ae60;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        footer {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            margin-top: 40px;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Document Quality Report</h1>
+            <div class="document-name">Document: formatted.docx</div>
+        </header>
+        <section class="summary-section">
+            <h2>Summary</h2>
+            <p class="summary-text">Overall Status: <span class="status-pass">✓ No errors found</span></p>
+            <div class="stats-grid">
+                <div class="stat-box error">
+                    <div class="stat-count">0</div>
+                    <div class="stat-label">Errors</div>
+                </div>
+                <div class="stat-box warning">
+                    <div class="stat-count">0</div>
+                    <div class="stat-label">Warnings</div>
+                </div>
+                <div class="stat-box info">
+                    <div class="stat-count">0</div>
+                    <div class="stat-label">Info</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-count">0</div>
+                    <div class="stat-label">Total Issues</div>
+                </div>
+            </div>
+        </section>
+        <section>
+                <div class="empty-state">
+                    <div class="empty-state-icon">✓</div>
+                    <div class="empty-state-text">No quality issues found!</div>
+                </div>
+            </section>
+        <footer>
+            <p>Generated by Document Quality Checker</p>
+        </footer>
+    </div>
+</body>
+</html>
