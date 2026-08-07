@@ -1,38 +1,91 @@
-# Document Quality Checker
+# DocAssist AI – Intelligent Technical Documentation Quality Checker
 
-## Problem Statement
+## Overview
 
-Technical documentation teams often spend significant time manually reviewing Microsoft Word documents for formatting and structural issues before publication. Common issues include:
+DocAssist AI is an AI-powered document quality checker that automates the pre-review process for Microsoft Word technical documents. It analyzes document structure, validates documentation standards, and generates a detailed HTML quality report to help technical writers identify issues before manual review.
 
-- Missing Heading 1
-- Incorrect heading hierarchy
-- Skipped heading levels
-- Inconsistent document structure
-
-Manual reviews are repetitive, time-consuming, and prone to human error, especially when handling a large number of documents.
+The solution is implemented as a Python-based MCP (Model Context Protocol) server that exposes a `check_document_quality` tool, enabling Claude Code to invoke the document analysis workflow directly.
 
 ---
 
-# Project Scope
+# Problem Statement
 
-The Document Quality Checker automates the review of Word (.docx) documents by analyzing their heading structure and generating a quality report.
+Technical documentation often requires multiple review cycles to identify formatting and structural issues before publication. Manual reviews are repetitive, time-consuming, and susceptible to human error.
 
-Current capabilities include:
+Common issues include:
 
-- Reading Microsoft Word (.docx) documents
-- Validating heading hierarchy
-- Detecting structural inconsistencies
-- Generating an HTML quality report
-- Returning a JSON summary through an MCP tool
+- Incorrect heading hierarchy
+- Missing or inconsistent formatting
+- Empty headings
+- Improper document structure
+- Style inconsistencies
+- Documentation standard violations
 
-This proof-of-concept focuses only on document structure and heading validation.
+This project automates the document pre-review process by performing quality checks and generating a structured report with actionable findings.
+
+---
+
+# Target Users
+
+- Technical Writers
+- Documentation Engineers
+- Technical Publications Teams
+- Documentation Reviewers
+- Product Documentation Managers
+
+---
+
+# Features
+
+- Microsoft Word (.docx) document analysis
+- Heading hierarchy validation
+- Empty heading detection
+- Document structure validation
+- HTML quality report generation
+- JSON summary output
+- MCP Server integration
+- Claude Skill integration
+
+---
+
+# Project Workflow
+
+```text
+Word Document (.docx)
+        │
+        ▼
+Document Reader
+        │
+        ▼
+Heading Validation
+        │
+        ▼
+Quality Analysis
+        │
+        ▼
+HTML Report Generation
+        │
+        ▼
+JSON Summary
+```
 
 ---
 
 # Project Structure
 
-```
+```text
 document-quality-checker/
+│
+├── .claude/
+│   ├── mcp.json
+│   └── skills/
+│       └── document-quality-checker.md
+│
+├── input/
+│   └── formatted.docx
+│
+├── output/
+│   └── formatted_quality_report.html
 │
 ├── server/
 │   └── index.py
@@ -42,138 +95,238 @@ document-quality-checker/
 │   ├── heading_checker.py
 │   └── report_generator.py
 │
-├── output/
-│
-├── .claude/
+├── tests/
 │
 └── README.md
 ```
 
 ---
 
-# Prerequisites
+# Technology Stack
 
-- Python 3.11 or later
-- Microsoft Word (.docx) document
-- MCP 2.0.0
-- Claude Code (for MCP integration)
-
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
+| Component | Technology |
+|------------|------------|
+| Language | Python 3.14 |
+| MCP SDK | mcp 2.0.0 |
+| Document Processing | python-docx |
+| Report Generation | HTML |
+| AI Integration | Claude Skills |
+| MCP Server | Official MCP SDK |
+| Version Control | GitHub |
 
 ---
 
-# Setup
+# Installation
 
-Clone the repository
+Clone the repository.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/<your-username>/document-quality-checker.git
+
 cd document-quality-checker
 ```
 
-Install dependencies
+Install dependencies.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Configure the MCP server
+---
+
+# MCP Server Configuration
+
+Register the MCP server with Claude Code.
+
+```bash
+claude mcp add --scope project document-quality-checker -- C:\Windows\py.exe -3 D:\document-quality-checker\server\index.py
+```
+
+Approve the server when prompted.
+
+Verify the registration.
+
+```bash
+claude mcp list
+```
+
+Expected output:
+
+```text
+document-quality-checker
+✔ Connected
+```
+
+---
+
+# Running the MCP Server
+
+The server is automatically started by Claude Code.
+
+To test manually:
+
+```bash
+py -3 server/index.py
+```
+
+---
+
+# Available MCP Tool
+
+## check_document_quality
+
+Analyzes a Microsoft Word document and generates a quality report.
+
+### Input
 
 ```json
 {
-  "mcpServers": {
-    "document-quality-checker": {
-      "command": "py",
-      "args": [
-        "-3",
-        "server/index.py"
-      ]
-    }
-  }
+  "document_path": "input/formatted.docx"
 }
 ```
 
----
-
-# Running the Proof of Concept
-
-Start Claude Code.
-
-Invoke the MCP tool:
-
-```
-check_document_quality
-```
-
-Input
-
-```
-document_path
-```
-
-Example
-
-```
-D:\Documents\Healthy_Lifestyle_Unformatted.docx
-```
-
-The tool generates:
-
-- HTML quality report
-- JSON summary
-
----
-
-# Output
-
-Example JSON
+### Output
 
 ```json
 {
   "status": "success",
-  "report_path": "...",
-  "total_findings": 7,
+  "report_path": "output/formatted_quality_report.html",
+  "total_findings": 0,
   "error_count": 0,
-  "warning_count": 1,
-  "info_count": 6
+  "warning_count": 0,
+  "info_count": 0
 }
 ```
+
+---
+
+# Example Usage
+
+Ask Claude Code:
+
+```text
+Use the check_document_quality tool to analyze input/formatted.docx.
+```
+
+Example response:
+
+```json
+{
+  "status": "success",
+  "report_path": "D:\\document-quality-checker\\output\\formatted_quality_report.html",
+  "total_findings": 0,
+  "error_count": 0,
+  "warning_count": 0,
+  "info_count": 0
+}
+```
+
+---
+
+# Components
+
+## DocxReader
+
+Reads Microsoft Word documents and extracts document content.
+
+### Responsibilities
+
+- Read .docx files
+- Extract paragraphs
+- Preserve document structure
+
+---
+
+## HeadingChecker
+
+Validates heading hierarchy and document organization.
+
+Checks include:
+
+- Empty headings
+- Heading hierarchy
+- Missing Heading 1
+- Skipped heading levels
+- Multiple top-level headings
+- Document structure validation
+
+---
+
+## HTMLReportGenerator
+
+Generates an HTML report containing:
+
+- Summary statistics
+- Error count
+- Warning count
+- Information count
+- Detailed findings
+
+---
+
+# Workshop Learnings Applied
+
+This project applies several concepts covered during the AI workshop.
+
+## Prompt Engineering
+
+Designed structured prompts to perform document quality validation and generate consistent outputs.
+
+## Claude Skills
+
+Created a reusable Document Quality Checker Skill that guides Claude through the review workflow.
+
+## MCP Server
+
+Implemented a Python-based MCP server using the official MCP SDK to expose document quality analysis as a reusable tool.
+
+## AI Workflow
+
+Automated the complete workflow:
+
+```text
+Word Document
+      │
+      ▼
+Quality Analysis
+      │
+      ▼
+HTML Report
+      │
+      ▼
+JSON Summary
+```
+
+## GitHub
+
+Maintained the complete source code, documentation, and proof-of-concept in a public repository.
 
 ---
 
 # What is Automated
 
-The proof-of-concept automatically performs the following tasks:
+The system automatically:
 
-- Reads Word documents
-- Detects heading hierarchy issues
-- Detects missing Heading 1
-- Detects multiple Heading 1 sections
-- Generates an HTML report
-- Returns a structured JSON summary through the MCP interface
+- Reads Microsoft Word documents
+- Validates heading hierarchy
+- Detects structural issues
+- Generates HTML reports
+- Returns JSON summaries
+- Integrates with Claude through MCP
 
 ---
 
-# What Still Requires Human Review
+# What Requires Human Review
 
-The current implementation does not evaluate document quality beyond structure.
+The proof-of-concept does **not** automatically correct documents.
 
-A technical writer should still review:
+Human reviewers are responsible for:
 
-- Grammar
-- Spelling
-- Technical accuracy
-- Completeness
-- Images
-- Tables
-- Captions
-- Writing style
-- Consistency of terminology
-- Compliance with company documentation standards
+- Accepting or rejecting recommendations
+- Editing document content
+- Technical accuracy review
+- Language improvements
+- Compliance validation
 
 ---
 
@@ -181,47 +334,39 @@ A technical writer should still review:
 
 Current limitations include:
 
-- Supports only Microsoft Word (.docx) files.
-- Does not check fonts or formatting consistency.
-- Does not validate tables or images.
-- Does not verify caption styles.
-- Does not detect broken references or hyperlinks.
-- Does not review document content or technical correctness.
-- Relies on correctly applied Microsoft Word heading styles.
-
-If headings are manually formatted instead of using Word Heading styles, they may not be detected correctly.
-
----
-
-# Workshop Learnings Applied
-
-This project applies several concepts learned during the workshop:
-
-- MCP (Model Context Protocol) server development
-- Claude Code integration
-- Tool registration
-- Prompt-driven workflows
-- Modular software design
-- JSON-based communication
-- Proof-of-concept development
-- AI-assisted automation for documentation workflows
+- Supports only Microsoft Word (.docx) documents
+- Focuses primarily on document structure
+- Does not automatically correct issues
+- Does not validate technical correctness
+- Does not perform grammar or spelling checks
+- No Microsoft Word add-in
+- No cloud deployment
 
 ---
 
 # Future Enhancements
 
-Planned improvements include:
-
-- Font consistency checking
-- Paragraph spacing validation
-- Caption style validation
-- Table style validation
-- Image validation
-- Broken link detection
-- Grammar checking
-- Automatic document correction
+- Automatic issue correction
+- Grammar and readability analysis
+- DITA XML support
 - PDF support
-- Batch document processing
+- Confluence integration
+- Microsoft Word Add-in
+- Company terminology validation
+- AI-powered document rewriting
+
+---
+
+# Success Criteria
+
+The project is considered successful if it:
+
+- Successfully processes Microsoft Word documents
+- Detects documentation quality issues
+- Generates HTML reports
+- Returns structured JSON summaries
+- Exposes functionality through an MCP server
+- Integrates successfully with Claude Code
 
 ---
 
